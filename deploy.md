@@ -1,15 +1,22 @@
 ## First Time Deployment
 ---------------------	
-sudo apt-get update
-sudo apt install docker.io
-git clone https://github.com/bssoft82/gl-retail-ordering-system.git
-cd gl-retail-ordering-system
+After you initiate the instance, please run below commands.
 
-##Deploy FE-BE
+_sudo apt-get update_
+
+_sudo apt install docker.io_
+
+_git clone https://github.com/bssoft82/gl-retail-ordering-system.git_
+
+_cd gl-retail-ordering-system_
+
+Deploy FE-BE
 -------------
-cd bin
-./deploy-fe-be.sh
+_cd bin_
 
-##Deploy Recommendation_services
+_./deploy-fe-be.sh_
+
+
+Deploy Recommendation_services
 -------------------------------
-./deploy-recommendation.sh
+_./deploy-recommendation.sh_
