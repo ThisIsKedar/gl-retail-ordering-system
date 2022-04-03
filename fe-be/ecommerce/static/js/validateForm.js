@@ -1,9 +1,30 @@
-function validate() {
+function searchValidate() {
+    if (/^.{0,}$/.test(document.getElementById("city_autocomplete").value)){
+        return true;
+    } else {
+        alert("Product name should not have any special characters");
+        document.getElementById("city_autocomplete").focus();
+        return false;
+    }
+}
+function registerValidate() {
     var result = validatePassword();
     return result;
 }
 
 function validatePassword() {
+    if (/^[.\S/g]{8,15}$/.test(document.getElementById("password").value)){
+        return validatePasswords()
+    } else {
+        alert("Password must be between 8 and 15 characters without spaces");
+        document.getElementById("password").focus();
+        return false;
+    }
+}
+
+
+
+function validatePasswords() {
     var pass = document.getElementById("password").value;
     var cpass = document.getElementById("cpassword").value;
     if (pass == cpass) {
@@ -15,26 +36,51 @@ function validatePassword() {
     }
 }
 
+
+
 function validateEmailAddress() {
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.getElementById("email").value)) {
-        return validatePhoneNumber()
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.getElementById("regemail").value)) {
+        return validateFirstName()
     }
-    alert("You have entered an invalid email address!")
-    document.getElementById("email").focus();
+    alert("Invalid Email!! It should be in the format of abc@xyz.com")
+    document.getElementById("regemail").focus();
     return (false)
 }
 
-// Allowed Format
-// (123) 456-7890
-// 123-456-7890
-// 123.456.7890
-// 1234567890
+function validateFirstName() {
+    if (/^[A-Za-z]+$/.test(document.getElementById("regfirstName").value)) {
+        return validateLastName()
+    }
+    alert("You have entered an invalid first name! First name should only contain Alphabets without spaces")
+    document.getElementById("regfirstName").focus();
+    return (false)
+}
+
+function validateLastName() {
+    if (/^[A-Za-z]+$/.test(document.getElementById("reglastName").value)) {
+        return validatePhoneNumber()
+    }
+    alert("You have entered an invalid last name! Last name should only contain Alphabets without spaces")
+    document.getElementById("reglastName").focus();
+    return (false)
+}
+
+
 function validatePhoneNumber() {
-    if (/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test(document.getElementById("phone").value)) {
+    if (/^[0-9]{10}$/.test(document.getElementById("regphone").value)) {
+        return validateZipcode()
+    }
+    alert("You have entered an invalid phone number! Phone number should be 10 digits without countrycode")
+    document.getElementById("regphone").focus();
+    return (false)
+}
+
+function validateZipcode() {
+    if (/^[0-9]{6}$/.test(document.getElementById("regzipcode").value)) {
         return (true)
     }
-    alert("You have entered an invalid phone number!")
-    document.getElementById("phone").focus();
+    alert("You have entered an invalid zipcode! Zip code should be 6 digits")
+    document.getElementById("regzipcode").focus();
     return (false)
 }
 

@@ -6,7 +6,8 @@ from email.mime.text import MIMEText
 from flask import session
 from flask import url_for, flash, redirect
 from flask_wtf import FlaskForm
-from sqlalchemy import func
+from sqlalchemy import func, exc
+
 from wtforms import StringField, SubmitField, TextAreaField, IntegerField, RadioField, FloatField, SelectField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Length, Email
@@ -114,6 +115,17 @@ def getLoginUserDetails():
 
     return (loggedIn, firstName, productCountinCartForGivenUser)
 
+def getUserId():
+
+
+    if 'email' not in session:
+        userid = 10009
+    else:
+        userid = User.query.with_entities(User.userid).filter(
+            User.email == session['email']).first()
+    userId = userid[0]
+    return userId
+
 
 def getProductDetails(productId):
     productDetailsById = Product.query.filter(Product.productid == productId).first()
@@ -137,9 +149,13 @@ def extractAndPersistUserDataFromForm(request):
 
     user = User(fname=firstName, lname=lastName, password=hashlib.md5(password.encode()).hexdigest(), address=address,
                 city=city, state=state, country=country, zipcode=zipcode, email=email, phone=phone)
-    db.session.add(user)
-    db.session.flush()
-    db.session.commit()
+
+    try:
+        db.session.add(user)
+        db.session.flush()
+        db.session.commit()
+    except exc.SQLAlchemyError:
+        return "Registration failed"
     return "Registered Successfully"
 
 

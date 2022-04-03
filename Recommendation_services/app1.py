@@ -3,13 +3,14 @@ import pickle
 
 import pandas as pd
 
-
 app = FastAPI()
 
 from pydantic import BaseModel
 
+
 class request_body(BaseModel):
-    product_id : str
+    product_id: str
+
 
 @app.get("/")
 def first_example():
@@ -18,37 +19,44 @@ def first_example():
     """
     return {"GFG Example": "FastAPI"}
 
+
 @app.post('/predict')
-def predict(data : request_body):
+def predict(data: request_body):
     def recommendations(Product_ID, indices, cosine_sim):
         recommended_prods = []
-    
+
         idx = indices[indices == Product_ID].index[0]
-    
-        score_series = pd.Series(cosine_sim[idx]).sort_values(ascending = False)
-    
+
+        score_series = pd.Series(cosine_sim[idx]).sort_values(ascending=False)
+
         top20_indexes = list(score_series.iloc[1:21].index)
-    
+
         for i in top20_indexes:
             recommended_prods.append(list(indices)[i])
-        
+
         return recommended_prods
-    
+
     test_data = data.product_id
-    filename_cossine="cosine_sim.sav"
-    filename_index="indices.sav"
+    filename_cossine = "cosine_sim.sav"
+    filename_index = "indices.sav"
 
     loaded_indices = pickle.load(open(filename_index, 'rb'))
     loaded_cossine = pickle.load(open(filename_cossine, 'rb'))
 
     lst_recmd = recommendations(int(test_data), loaded_indices, loaded_cossine)
 
-    #lst_recmd=[test_data]
-    dict_out={"Product_ids":lst_recmd}
+    # lst_recmd=[test_data]
+    dict_out = {"Product_ids": lst_recmd}
+    print(lst_recmd)
+    print(dict_out)
     return dict_out
 
 class request_body_user(BaseModel):
     userid : str
+
+class request_body_user(BaseModel):
+    userid: str
+
 
 @app.post('/predictuser')
 def predictuser(data: request_body_user):
@@ -72,6 +80,7 @@ def predictuser(data: request_body_user):
         return list(recommended_prods)
 
     user_data = data.userid
+
     filename_corr = "corr_matrix.sav"
     filename_index_user = "user_indices.sav"
     filename_df = "df.sav"

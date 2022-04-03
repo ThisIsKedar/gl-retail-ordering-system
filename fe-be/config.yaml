@@ -1,6 +1,9 @@
-mysql_host: 'database-1.cqml2mhj7aba.us-east-1.rds.amazonaws.com'
+mysql_host: 'ros.cqml2mhj7aba.us-east-1.rds.amazonaws.com'
 mysql_user: 'root'
 # Enter your password in field below
 mysql_password: 'rootroot'
 mysql_db: 'grocart'
-recommendationServiceUrl : 'http://172.31.94.144:8000/predict'
+#recommendationServiceUrl : 'http://127.0.0.1:8000/predict'
+recommendationServiceUrl : 'http://internal-ros-rs-lb-2023148986.us-east-1.elb.amazonaws.com:8000/predict'
+#userProductRecommendationServiceUrl : 'http://127.0.0.1:8000/predictuser'
+userProductRecommendationServiceUrl : 'http://internal-ros-rs-lb-2023148986.us-east-1.elb.amazonaws.com:8000/predictuser'

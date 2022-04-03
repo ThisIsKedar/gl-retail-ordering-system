@@ -41,7 +41,10 @@
 		<p>{{data['description']}}</p>
 	</div>
 		<div id="addToCart">
-		<a href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}">Add to Cart</a>
+		<p><u>
+			<a href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}"><input type="submit" value="Add to Cart"> </a>
+		</u>
+		</p>
 		</div>
 
 	</div>

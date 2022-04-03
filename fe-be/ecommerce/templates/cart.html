@@ -1,6 +1,7 @@
 {% extends "header.html"  %}
 {% block content %}
 <!-- Title Page -->
+	{% if totalsum > 0.00 %}
 	<section class="bg-title-page p-t-40 p-b-50 flex-col-c-m" >
 
 		<h2 align="left" style="display: block; color: black; font-size: 2em; font-family: Montserrat-Regular;"><span> Cart </span> </h2>
@@ -52,13 +53,15 @@
 
 				<div class="flex-w flex-m w-full-sm">
                     	</div>
+
     <div class="size10 trans-0-4 m-t-10 m-b-10">
-                    Shipping & handling :&#8377 0.00
+                   <b> Shipping & handling :&#8377 0.00
                     <br>
                     Taxes(6% on grand total): {{tax}}
                     <br>
                     Grand Total:        &#8377 {{totalsum}}
-				</div>
+				   </b>
+	</div>
 
 
 			</div>
@@ -66,7 +69,7 @@
 				<div class="flex-w flex-m w-full-sm">
 
 				</div>
-                {% if totalsum > 0.00 %}
+
 				<div class="size10 trans-0-4 m-t-10 m-b-10">				<!-- Button -->
 				<button type="button">
 <!--					<button class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">-->
@@ -78,7 +81,7 @@
 				</div>
                 {% else %}
 
-                    <p>Please add products to the cart.</p>
+                    <p>Dear user, your cart is empty. You may choose from the below recommended items.</p>
 
                     {% endif %}
 			</div>
