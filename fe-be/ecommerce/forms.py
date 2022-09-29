@@ -172,7 +172,7 @@ def isUserAdmin():
         # ProductCategory.query.filter_by(productid=product.productid).first()
         userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
         currentUser = User.query.get_or_404(userId)
-        return currentUser.isadmin
+        return False
 
 def userRecommendations():
     productId = Order.query.join(OrderedProduct, OrderedProduct.orderid == Order.orderid) \
