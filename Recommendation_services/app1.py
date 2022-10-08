@@ -89,7 +89,7 @@ def predictuser(data: request_body_user):
         return list(recommended_prods)
 
     ### user_indices file has userid above 10001 only, so had to add 10000 to the data
-    user_data = 10000 + data.userid
+    user_data = 10000 + int(data.userid)
 
     filename_corr = "corr_matrix.sav"
     filename_index_user = "user_indices.sav"
