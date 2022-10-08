@@ -36,19 +36,22 @@ def predict(data: request_body):
 
         return recommended_prods
 
-    test_data = data.product_id
+    test_data = int(data.product_id)
+    
     filename_cossine = "cosine_sim.sav"
     filename_index = "indices.sav"
-
+    
     loaded_indices = pickle.load(open(filename_index, 'rb'))
     loaded_cossine = pickle.load(open(filename_cossine, 'rb'))
+    
 
     lst_recmd = recommendations(int(test_data), loaded_indices, loaded_cossine)
+    
 
     # lst_recmd=[test_data]
     dict_out = {"Product_ids": lst_recmd}
-    print(lst_recmd)
-    print(dict_out)
+    #print(lst_recmd)
+    #print(dict_out)
     return dict_out
 
 class request_body_user(BaseModel):
@@ -57,7 +60,13 @@ class request_body_user(BaseModel):
 class request_body_user(BaseModel):
     userid: str
 
-
+#@app.post('/predictuser')
+#def predictuser(data: request_body_user):
+#
+#    dict_products = {"Product_ids": []}
+#    return dict_products
+	
+	
 @app.post('/predictuser')
 def predictuser(data: request_body_user):
     def similarUsers(user_id, correlation_matrix, user_indices):
@@ -79,7 +88,8 @@ def predictuser(data: request_body_user):
             recommended_prods = sorted_ratings['productid'][1:20]
         return list(recommended_prods)
 
-    user_data = data.userid
+    ### user_indices file has userid above 10001 only, so had to add 10000 to the data
+    user_data = 10000 + data.userid
 
     filename_corr = "corr_matrix.sav"
     filename_index_user = "user_indices.sav"
@@ -101,3 +111,5 @@ def predictuser(data: request_body_user):
 
     dict_products = {"Product_ids": lst_recmd}
     return dict_products
+
+
