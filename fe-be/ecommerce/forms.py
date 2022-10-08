@@ -254,14 +254,17 @@ class addProductForm(FlaskForm):
 # Gets products in the cart
 def getusercartdetails():
     userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+    
 
     productsincart = Product.query.join(Cart, (Product.productid == Cart.productid ) &  (Product.weight == Cart.subproductid) ) \
         .add_columns(Product.productid, Product.product_name, Product.discounted_price, Cart.quantity, Product.image) \
         .add_columns(Product.discounted_price * Cart.quantity).filter(
-        Cart.userid == userId)
+        Cart.userid == userId[0])
+    
     totalsum = 0
 
     for row in productsincart:
+        #print(row[0].productid)
         totalsum += row[6]
 
     tax = ("%.2f" % (.06 * float(totalsum)))
