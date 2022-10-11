@@ -211,7 +211,7 @@ def cart():
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
         cartdetails, totalsum, tax = getusercartdetails();
         
-        if cartdetails:
+        if cartdetails.count() > 0:
             products = {"product_id": cartdetails[0].productid}
         else: # default 
             products = {"product_id": 202212001}
