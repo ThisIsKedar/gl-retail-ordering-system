@@ -12,9 +12,11 @@ import yaml
 # SQLALCHEMY_TRACK_MODIFICATIONS = True
 ######## Enable this for debugging #########
 
+db2 = yaml.safe_load(open('config.yaml'))
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:rootroot@ros.cqml2mhj7aba.us-east-1.rds.amazonaws.com/grocart'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://' + db2['mysql_user'] + ':' + db2['mysql_password'] + '@' + db2['mysql_host'] + '/' + db2['mysql_db']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_MAX_OVERFLOW'] = 0
 app.config['SQLALCHEMY_POOL_SIZE'] = 20
@@ -26,7 +28,6 @@ ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ######### Required in Case of firing complex queries without ORM #########
-db2 = yaml.safe_load(open('config.yaml'))
 app.config['MYSQL_HOST'] = db2['mysql_host']
 app.config['MYSQL_USER'] = db2['mysql_user']
 app.config['MYSQL_PASSWORD'] = db2['mysql_password']

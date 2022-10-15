@@ -12,6 +12,7 @@ import json
 import requests
 import yaml
 
+
 loadapi = yaml.safe_load(open('config.yaml'))
 
 
@@ -119,9 +120,12 @@ def productDescription():
     loggedIn, firstName, noOfItems = getLoginUserDetails()
     productid = request.args.get('productId')
     productDetailsByProductId = getProductDetails(productid)
+
+    
     api_url = loadapi['recommendationServiceUrl']
     products = {"product_id": productid}
     response = requests.post(api_url, json=products)
+    #print(response.text)
     prod_json = response.json()
     # prod_json = {"Product_ids": [202228337, 2, 3, 4, 5]}
     list = []
@@ -133,7 +137,9 @@ def productDescription():
 
     return render_template("productDescription.html", data=productDetailsByProductId, loggedIn=loggedIn,
                            firstName=firstName, productCountinKartForGivenUser=noOfItems,
-                           recommendedProducts=recommendedProductsMassagedDetails)
+                           recommendedProducts=recommendedProductsMassagedDetails
+                           #recommendedProducts = []
+                           )
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -204,11 +210,15 @@ def cart():
         loadapi = yaml.safe_load(open('config.yaml'))
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
         cartdetails, totalsum, tax = getusercartdetails();
+        
+        if cartdetails.count() > 0:
+            products = {"product_id": cartdetails[0].productid}
+        else: # default 
+            products = {"product_id": 202212001}
 
         api_url = loadapi['recommendationServiceUrl']
-        products = {"product_id": 202212001}
         response = requests.post(api_url, json=products)
-        print(response.json())
+        #print(response.json())
         prod_json = response.json()
         # prod_json = {"Product_ids": [202228337, 2, 3, 4, 5]}
         # print(response.json())
