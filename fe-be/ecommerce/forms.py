@@ -346,9 +346,9 @@ def extractOrderdetails(request, totalsum):
 
     # add details to ordered;
     #  products table
-    addOrderedproducts(userId, orderid)
+    addOrderedproducts(userId, orderid[0])
     # add transaction details to the table
-    updateSalestransaction(totalsum, ccnumber, orderid, cctype)
+    updateSalestransaction(totalsum, ccnumber, orderid[0], cctype)
 
     # remove ordered products from cart after transaction is successful
     removeordprodfromcart(userId)
