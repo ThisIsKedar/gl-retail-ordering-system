@@ -103,7 +103,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Sravan','Voona','cd84d683cc5612c69efe115c80d0b7dc','Vishakapatnam','Visakhapatnam','Andhra Pradesh','India','530041','sras1729@gmail.com','1111111111',0);
+INSERT INTO `user` VALUES (1,'Sravan','Voona','cd84d683cc5612c69efe115c80d0b7dc','Vishakapatnam','Visakhapatnam','Andhra Pradesh','India','530041','sras1729@gmail.com','1111111111',1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
