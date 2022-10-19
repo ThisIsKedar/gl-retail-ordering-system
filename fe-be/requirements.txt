@@ -136,3 +136,4 @@ widgetsnbextension==3.6.0
 WTForms==3.0.1
 yaml-1.3==0.1.0
 zipp==3.7.0
+razorpay==1.3.0
