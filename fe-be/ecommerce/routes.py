@@ -11,10 +11,14 @@ from flask import Flask, Response, render_template, request
 import json
 import requests
 import yaml
-
+import razorpay
 
 loadapi = yaml.safe_load(open('config.yaml'))
+payapi = yaml.safe_load(open('api.yaml'))
 
+rz_api = payapi['api_id']
+rz_key = payapi['api_key']
+client = razorpay.Client(auth=(rz_api, rz_key)) 
 
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
@@ -209,7 +213,7 @@ def cart():
     if isUserLoggedIn():
         loadapi = yaml.safe_load(open('config.yaml'))
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
-        cartdetails, totalsum, tax = getusercartdetails();
+        cartdetails, totalsum, tax = getusercartdetails()
         
         if cartdetails.count() > 0:
             products = {"product_id": cartdetails[0].productid}
@@ -441,21 +445,12 @@ def removeFromCart():
 def checkoutForm():
     if isUserLoggedIn():
         cartdetails, totalsum, tax = getusercartdetails()
-        return render_template("checkoutPage.html", cartData=cartdetails, totalsum=totalsum, tax=tax)
+        loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
+        return render_template("checkoutPage.html", cartData=cartdetails, totalsum=totalsum, tax=tax,
+                                productCountinKartForGivenUser=productCountinKartForGivenUser, loggedIn=loggedIn,
+                               firstName=firstName)
     else:
         return redirect(url_for('loginForm'))
-
-
-@app.route("/createOrder", methods=['GET', 'POST'])
-def createOrder():
-    loggedIn = getLoginUserDetails()
-    totalsum = request.args.get('total')
-    email, username, ordernumber, address, fullname, phonenumber, provider = extractOrderdetails(request, totalsum)
-    if email:
-        sendEmailconfirmation(email, username, ordernumber, phonenumber, provider)
-
-    return render_template("OrderPage.html", email=email, username=username, ordernumber=ordernumber,
-                           address=address, fullname=fullname, phonenumber=phonenumber, loggedIn=loggedIn)
 
 
 @app.route("/orders", methods=['GET', 'POST'])
@@ -502,3 +497,50 @@ def seeTrends():
     return render_template('trends.html',
                            div_placeholder=Markup(my_plot_div), trendtype=trendtype
                            )
+
+## Payment module implementation 
+
+@app.route("/createOrder", methods=['GET', 'POST'])
+def createOrder():
+    if isUserLoggedIn():
+        loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
+    totalsum = request.args.get('total')
+    float_totalsum = round(float(request.args.get('total')),2)
+    amount_payable = int(str(float_totalsum).replace(".",""))
+    email, username, ordernumber, address, fullname, phonenumber = extractOrderdetails(request, totalsum)
+
+    if amount_payable > 1500000:
+        amount_payable = 1500000
+
+    data = { "amount": amount_payable, "currency": "INR", "receipt": str(ordernumber[0]) } 
+    payment = client.order.create(data=data)
+    print("Payment Object: ")
+    print (payment)
+    print("Order number: ")
+    print(ordernumber[0])
+
+    cartdetails, totalsum, tax = getusercartdetails()
+
+    if email:
+        sendEmailconfirmation(email, username, ordernumber, phonenumber)
+
+    return render_template("pay.html", payment=payment, cartData=cartdetails, totalsum=totalsum, tax=tax,
+                                productCountinKartForGivenUser=productCountinKartForGivenUser, loggedIn=loggedIn,
+                               firstName=firstName)
+
+import pandas as pd
+
+@app.route("/paymentSuccess", methods=['POST'])
+def paymentSuccess():
+    payments = client.payment.all()
+    p_df = pd.DataFrame(payments['items'])
+    rzp_order_id = request.args.get('order')
+    this_transaction = pd.DataFrame
+    this_transaction = p_df[p_df['order_id'] == rzp_order_id]
+    # if this_transaction['error_code']:
+    #     print("Payment Failed.!")
+    # else:
+    userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+    removeordprodfromcart(userId)
+
+    return redirect(url_for('root'))
