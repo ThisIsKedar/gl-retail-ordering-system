@@ -17,6 +17,8 @@ class User(db.Model):
     zipcode = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    isadmin = db.Column(db.Boolean, nullable=False, default = False)
+    active = db.Column(db.Boolean, nullable=False, default = True)
 
     def __repr__(self):
         return f"User('{self.fname}', '{self.lname}'), '{self.password}', " \
@@ -89,7 +91,7 @@ class Order(db.Model):
     orderid = db.Column(db.Integer, primary_key=True)
     order_date = db.Column(db.DateTime, nullable=False)
     total_price = db.Column(db.DECIMAL, nullable=False)
-    userid = db.Column(db.Integer, db.ForeignKey('user.userid'), nullable=False, primary_key=True)
+    userid = db.Column(db.Integer, db.ForeignKey('user.userid'), nullable=False)
 
     def __repr__(self):
         return f"Order('{self.orderid}', '{self.order_date}','{self.total_price}','{self.userid}'')"
@@ -101,7 +103,7 @@ class OrderedProduct(db.Model):
     orderid = db.Column(db.Integer,db.ForeignKey('order.orderid'), nullable=False)
     productid = db.Column(db.Integer,db.ForeignKey('product.productid'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    subproductid = db.Column(db.Integer, nullable=False)
+    subproductid = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return f"Order('{self.ordproductid}', '{self.orderid}','{self.productid}','{self.quantity}','{self.subproductid}')"

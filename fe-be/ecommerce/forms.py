@@ -250,15 +250,19 @@ class addProductForm(FlaskForm):
     submit = SubmitField('Save')
 
 
+def db_norm(col):
+    return func.trim(func.lower(col))
+
 # START CART MODULE
 # Gets products in the cart
 def getusercartdetails():
     userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
 
-    productsincart = Product.query.join(Cart, (Product.productid == Cart.productid ) &  (Product.weight == Cart.subproductid) ) \
+    productsincart = Product.query.join(Cart, (Product.productid == Cart.productid)  &  (db_norm(Product.weight) == db_norm(Cart.subproductid)) )\
         .add_columns(Product.productid, Product.product_name, Product.discounted_price, Cart.quantity, Product.image) \
         .add_columns(Product.discounted_price * Cart.quantity).filter(
-        Cart.userid == userId)
+        Cart.userid == userId[0])
+    
     totalsum = 0
 
     for row in productsincart:
@@ -342,9 +346,9 @@ def extractOrderdetails(request, totalsum):
 
     # add details to ordered;
     #  products table
-    addOrderedproducts(userId, orderid)
+    addOrderedproducts(userId, orderid[0])
     # add transaction details to the table
-    updateSalestransaction(totalsum, ccnumber, orderid, cctype)
+    updateSalestransaction(totalsum, ccnumber, orderid[0], cctype)
 
     # remove ordered products from cart after transaction is successful
     removeordprodfromcart(userId)
